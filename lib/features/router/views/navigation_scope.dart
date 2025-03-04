@@ -2,6 +2,7 @@ import 'package:coursepilot/features/router/components/navbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+// A view that wraps the page with a navigation bar
 class NavigationScopeView extends ConsumerStatefulWidget {
   final Widget child;
   const NavigationScopeView({super.key, required this.child});

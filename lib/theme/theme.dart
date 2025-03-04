@@ -1,3 +1,6 @@
+// Custom definitions for our app's them
+// Use in UI with ThemeData.of(context).custom
+
 import 'package:coursepilot/theme/color_theme.dart';
 import 'package:coursepilot/theme/text_theme.dart';
 import 'package:flutter/material.dart';

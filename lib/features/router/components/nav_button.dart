@@ -1,23 +1,27 @@
+import 'package:coursepilot/theme/theme.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class NavbarButton extends ConsumerStatefulWidget {
-  const NavbarButton({super.key});
+class NavButton extends StatelessWidget {
+  final IconData icon;
+  final bool isSelected;
+  final void Function()? onTap;
 
-  @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _NavbarButtonState();
-}
+  const NavButton({
+    super.key,
+    required this.icon,
+    this.isSelected = false,
+    this.onTap,
+  });
 
-class _NavbarButtonState extends ConsumerState<NavbarButton> {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () {
-        // ref.read(routerController).go('/schedule');
-      },
+      onTap: onTap,
       child: Container(
         padding: const EdgeInsets.all(10),
-        child: const Icon(Icons.home),
+        child: Icon(icon),
+        color:
+            isSelected ? Theme.of(context).custom.colorTheme.background : null,
       ),
     );
   }

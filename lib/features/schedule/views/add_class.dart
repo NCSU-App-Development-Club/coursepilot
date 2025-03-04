@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class ScheduleView extends ConsumerStatefulWidget {
-  const ScheduleView({super.key});
+class AddClassView extends ConsumerStatefulWidget {
+  const AddClassView({super.key});
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => ScheduleViewState();
+  ConsumerState<ConsumerStatefulWidget> createState() => AddClassViewState();
 }
 
-class ScheduleViewState extends ConsumerState<ScheduleView> {
+class AddClassViewState extends ConsumerState<AddClassView> {
   @override
   Widget build(BuildContext context) {
     return Center(
       child: Text(
-        'Schedule Page (schedule/views/schedule.dart)',
+        'Add class Page (schedule/views/add_class.dart)',
         textAlign: TextAlign.center,
         style: Theme.of(context).textTheme.titleLarge,
       ),
