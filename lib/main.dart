@@ -1,3 +1,4 @@
+import 'package:calendar_view/calendar_view.dart';
 import 'package:coursepilot/features/router/controllers/router.dart';
 import 'package:coursepilot/theme/theme.dart';
 import 'package:flutter/material.dart';
@@ -40,11 +41,14 @@ class _CourseFireAppState extends ConsumerState<Coursepilot> {
     );
 
     // integrate MaterialApp with custom router
-    return MaterialApp.router(
-      title: 'Coursepilot',
-      theme: ref.read(darkThemeProvider),
-      darkTheme: ref.read(darkThemeProvider),
-      routerConfig: routerController,
+    return CalendarControllerProvider(
+      controller: EventController(),
+      child: MaterialApp.router(
+        title: 'Coursepilot',
+        theme: ref.read(darkThemeProvider),
+        darkTheme: ref.read(darkThemeProvider),
+        routerConfig: routerController,
+      ),
     );
   }
 }
