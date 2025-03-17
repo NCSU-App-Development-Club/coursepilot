@@ -16,6 +16,8 @@ class ScheduleViewState extends ConsumerState<ScheduleView> {
   final _eventController = EventController();
   final TextEditingController _titleController = TextEditingController();
 
+  /// Temporary add event dialog to test adding events to schedule
+  /// ...will be replaced by 'add-class' ui
   Future<void> _showAddEventDialog(BuildContext context) async {
     _titleController.clear();
     DateTime selectedDate = DateTime.now(); // Default to current date.
@@ -286,8 +288,9 @@ class ScheduleViewState extends ConsumerState<ScheduleView> {
         dayView,
         Container(
           alignment: Alignment.bottomRight,
+          padding: EdgeInsets.symmetric(vertical: 40, horizontal: 20),
           child: Container(
-            padding: EdgeInsets.all(8),
+            padding: EdgeInsets.all(10),
             decoration: BoxDecoration(
               color: AppColorsDark.primary,
               borderRadius: BorderRadius.circular(15)
@@ -298,7 +301,7 @@ class ScheduleViewState extends ConsumerState<ScheduleView> {
               },
               icon: Icon(Icons.add),
               color: Colors.white,
-              iconSize: 30,
+              iconSize: 35,
             )
           )
         )
