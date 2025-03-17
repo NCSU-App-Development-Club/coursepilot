@@ -31,7 +31,7 @@ class _NavbarState extends ConsumerState<Navbar> {
         mainAxisAlignment: MainAxisAlignment.center,
         spacing: 20,
         children: [
-          NavButton(icon: Icons.home, isSelected: true, onTap: () => go('/')),
+          NavButton(icon: Icons.calendar_month_outlined, isSelected: true, onTap: () => go('/')),
           NavButton(icon: Icons.search, onTap: () => go('/search')),
           NavButton(icon: Icons.add, onTap: () => go('/add-class')),
         ],
