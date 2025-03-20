@@ -15,6 +15,7 @@ class ScheduleView extends ConsumerStatefulWidget {
 class ScheduleViewState extends ConsumerState<ScheduleView> {
   final _eventController = EventController();
   final TextEditingController _titleController = TextEditingController();
+  bool isDayView = true;
 
   /// Helper function to retrieve TimeOfDay values from DateTime object
   TimeOfDay getTimeOfDay(DateTime dateTime) {
@@ -406,6 +407,52 @@ class ScheduleViewState extends ConsumerState<ScheduleView> {
     );
   }
 
+  List<Widget> mapEventsFor(bool dayView, List<CalendarEventData<Object?>> events) {
+    return events.map((event) {
+      return Expanded(
+        child: Card(
+          margin: EdgeInsets.all(1), 
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
+          color: Colors.blue,
+          child: ListTile(
+            contentPadding: !dayView ? EdgeInsets.symmetric(horizontal: 5) : EdgeInsets.symmetric(horizontal: 16, vertical: 1),
+            dense: true,
+            minVerticalPadding: .1,
+            title: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Flexible(
+                  flex: 3,
+                  child: Text(
+                    event.title,
+                    style: TextStyle(
+                      fontSize: isDayView ? 18 : 13,
+                      fontWeight: FontWeight.w700
+                    ),
+                    overflow: TextOverflow.clip,
+                  )
+                ),
+                (isDayView) ? Flexible(
+                  flex: 5,
+                  child: Text(
+                    '${formatTime(getTimeOfDay(event.startTime!))}-${formatTime(getTimeOfDay(event.endTime!))}',
+                    style: TextStyle(
+                      fontSize: isDayView ? 18 : 13,
+                      fontWeight: FontWeight.w700
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                  )
+                ) : SizedBox()
+              ],
+            ),
+          )
+        )
+      );
+    }).toList();
+  }
+
   addEvent(String eventTitle, DateTime eventStart, DateTime eventEnd) {
     final event = CalendarEventData(
       title: eventTitle,
@@ -432,42 +479,71 @@ class ScheduleViewState extends ConsumerState<ScheduleView> {
 
   @override
   Widget build(BuildContext context) {
+    var weekView = Padding(
+      padding: EdgeInsets.only(top: 14),
+      child: WeekView(
+        controller: _eventController,
+        backgroundColor: AppColorsDark.background,
+        startHour: 8,
+        endHour: 22,
+        heightPerMinute: 1,
+        weekNumberBuilder: (firstDayOfWeek) { return Text(''); },
+        timeLineBuilder: (date) {
+          if (date.hour < 12) {
+            return Text(
+              '${date.hour.toString()}am',
+              style: TextStyle(
+                color: AppColorsDark.dirtyWhite,
+                fontWeight: FontWeight.w700,
+                fontSize: 16,
+              ),
+            );
+          } else if (date.hour == 12) {
+            return Text(
+              '12pm',
+              style: TextStyle(
+                color: AppColorsDark.dirtyWhite,
+                fontWeight: FontWeight.w700,
+                fontSize: 16,
+              ),
+            );
+          } else {
+            return Text(
+              '${(date.hour - 12).toString()}pm',
+              style: TextStyle(
+                color: AppColorsDark.dirtyWhite,
+                fontWeight: FontWeight.w700,
+                fontSize: 16,
+              ),
+            );
+          }
+        },
+        hourIndicatorSettings: HourIndicatorSettings(
+          color: AppColorsDark.background,
+        ),
+        weekPageHeaderBuilder: WeekHeader.hidden,
+        weekDays: [
+          WeekDays.monday,
+          WeekDays.tuesday,
+          WeekDays.wednesday,
+          WeekDays.thursday,
+          WeekDays.friday,
+        ],
+        eventTileBuilder: (date, events, boundry, start, end) {
+          return Column(
+            children: mapEventsFor(isDayView, events)
+          );
+        },
+        fullDayEventBuilder: (events, date) {
+          return Container();
+        },
+      ),
+    );
     var dayView = DayView(
       controller: _eventController,
       eventTileBuilder: (date, events, boundry, start, end) {
         return Column(
-          children: events.map((event) {
-            return Expanded(
-              child: Card(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15),
-                ),
-                color: Colors.blue,
-                child: ListTile(
-                  title: Row(
-                    children: [
-                      Text(
-                        event.title,
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w700
-                        ),
-                      ),
-                      Spacer(),
-                      Text(
-                        '${formatTime(getTimeOfDay(event.startTime!))}-${formatTime(getTimeOfDay(event.endTime!))}',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w700
-                        ),
-                      )
-                    ],
-                  ),
-                  // subtitle: Text("Event Details"),
-                )
-              )
-            );
-          }).toList(),
+          children: mapEventsFor(isDayView, events)
         );
       },
       fullDayEventBuilder: (events, date) {
@@ -475,21 +551,6 @@ class ScheduleViewState extends ConsumerState<ScheduleView> {
         return Container();
       },
       onEventTap:(events, date) {
-        // showDialog(
-        //   context: context,
-        //   builder: (context) => AlertDialog(
-        //     title: Text('Event Details'),
-        //     content: Text(
-        //       'You tapped on events for ${date.toLocal()}. \nEvents: ${events.map((e) => e.title).join(", ")}',
-        //     ),
-        //     actions: [
-        //       TextButton(
-        //         onPressed: () => Navigator.of(context).pop(),
-        //         child: Text('Close'),
-        //       ),
-        //     ],
-        //   ),
-        // );
         _showEditEventDialog(context, events, date);
       },
       startHour: 8,
@@ -568,7 +629,27 @@ class ScheduleViewState extends ConsumerState<ScheduleView> {
     );
     return Stack(
       children: [
-        dayView,
+        isDayView ? dayView : weekView,
+        Container(
+          alignment: Alignment.topRight,
+          padding: EdgeInsets.only(top: 50, right: 10),
+          child: ElevatedButton(
+            onPressed: () {
+              // Change to week view
+              setState(() => isDayView = !isDayView);
+            }, 
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.transparent
+            ),
+            child: Text(
+              isDayView ? 'Week' : 'Day',
+              style: TextStyle(
+                color: AppColorsDark.primary,
+                fontSize: 24,
+              ),
+            ),
+          )
+        ),
         Container(
           alignment: Alignment.bottomRight,
           padding: EdgeInsets.symmetric(vertical: 40, horizontal: 20),
