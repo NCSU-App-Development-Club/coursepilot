@@ -16,6 +16,227 @@ class ScheduleViewState extends ConsumerState<ScheduleView> {
   final _eventController = EventController();
   final TextEditingController _titleController = TextEditingController();
 
+  /// Helper function to retrieve TimeOfDay values from DateTime object
+  TimeOfDay getTimeOfDay(DateTime dateTime) {
+    return TimeOfDay(hour: dateTime.hour, minute: dateTime.minute);
+  }
+  /// Helper function to format TimeOfDay object to 'hh:mm AM/PM'
+  String formatTime(TimeOfDay time) {
+    if (time.hour == 0) return '12:${time.minute.toString().padLeft(2, '0')} AM';
+    return '${((time.hour <= 12) ? time.hour : time.hour - 12).toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')} ${(time.hour < 12) ? 'AM' : 'PM'}';
+  }
+
+  /// Helper function to convert string formatted time to TimeOfDay obj
+  /// String must be in proper format of 'hh:mm AM'/'hh:mm PM' exactly to convert properly
+  TimeOfDay? toTimeOfDay(String formattedTime) {
+    RegExp regExp = RegExp(r'(\d{2}):(\d{2}) (AM|PM)');
+    Match? match = regExp.firstMatch(formattedTime);
+    if (match != null) {
+    int hours = int.parse(match.group(1)!); // Group 1 is hours (hh)
+    int minutes = int.parse(match.group(2)!); // Group 2 is minutes (mm)
+    String period = match.group(3)!; // Group 3 is AM/PM
+    if (period == 'PM') hours += 12;
+      return TimeOfDay(hour: hours, minute: minutes);
+    } else {
+      print("Invalid time format");
+      return null;
+    }
+  }
+
+  /// Helper function to convert TimeOfDay to a DateTime obj given date for the time of day
+  DateTime toDateTime(DateTime date, TimeOfDay timeOfDay) {
+    return DateTime(
+      date.year,
+      date.month,
+      date.day,
+      timeOfDay.hour,
+      timeOfDay.minute
+    );
+  }
+  /// Temporary edit event dialog to test adding events to schedule
+  /// ...will be replaced by 'add-class' ui
+  Future<void> _showEditEventDialog(BuildContext context, List<CalendarEventData<Object?>> events, DateTime date) async { 
+    String title = events.map((e) => e.title,).join(', ');
+    _titleController.text = title;
+    DateTime selectedDate = date;
+    String selectedStartTimeStr = events.map((e) => formatTime(getTimeOfDay(e.startTime!))).join(', ');
+    String selectedEndTimeStr = events.map((e) => formatTime(getTimeOfDay(e.endTime!))).join(', ');
+    
+    CalendarEventData event = CalendarEventData(
+      title: title, 
+      date: date,
+      startTime: toDateTime(date, toTimeOfDay(selectedStartTimeStr)!),
+      endTime: toDateTime(date, toTimeOfDay(selectedEndTimeStr)!),
+    );
+    await showDialog(
+      context: context,
+      barrierColor: Color(0xAA21252B),
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              title: Text(
+                'Event Details',
+                style: TextStyle(
+                  fontSize: 24
+                )
+              ),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TextField(
+                    controller: _titleController,
+                    decoration: InputDecoration(
+                      labelText: 'Title',
+                      labelStyle: TextStyle(
+                        fontSize: 20
+                      ),
+
+                    ),
+                    style: TextStyle(
+                      fontSize: 20
+                    )
+                  ),
+                  SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: () async {
+                      DateTime? datePicked = await showDatePicker(
+                        context: context,
+                        initialDate: selectedDate,
+                        firstDate: DateTime(2000),
+                        lastDate: DateTime(2101),
+                      );
+                      if (datePicked != null && datePicked != selectedDate) {
+                        setState(() {
+                          selectedDate = datePicked;
+                        });
+                      }
+                    },
+                    child: Container(
+                      padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                      decoration: BoxDecoration(
+                        color: AppColorsDark.primary,
+                        borderRadius: BorderRadius.circular(8)
+                      ),
+                      child: Text(
+                        'Date: ${DateFormat("MM/dd/yyy").format(selectedDate.toLocal()).toString()}',
+                        style: TextStyle(
+                          fontSize: 20,
+                          color: AppColorsDark.dirtyWhite
+                        ),
+                      ),
+                    )
+                  ),
+                  SizedBox(height: 10),
+                  Row(
+                    children: [
+                      ElevatedButton(
+                        onPressed: () async {
+                          TimeOfDay? startTimePicked = await showTimePicker(
+                            context: context, 
+                            initialTime: toTimeOfDay(selectedStartTimeStr)!,
+                          );
+
+                          if (startTimePicked != null && startTimePicked != toTimeOfDay(selectedStartTimeStr)) {
+                            setState(() {
+                              selectedStartTimeStr = formatTime(startTimePicked);
+                              selectedEndTimeStr = formatTime(TimeOfDay(hour: (startTimePicked.hour + 1) % 24, minute: startTimePicked.minute));
+                            });
+                          }
+                        },
+                        child: Container(
+                          padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                          decoration: BoxDecoration(
+                            color: AppColorsDark.tertiary,
+                            borderRadius: BorderRadius.circular(8)
+                          ),
+                          child: Text(
+                            selectedStartTimeStr,
+                            style: TextStyle(
+                              fontSize: 18,
+                              color: AppColorsDark.dirtyWhite
+                            ),
+                          ),
+                        ),
+                      ),
+                      Text('to'),
+                      ElevatedButton(
+                        onPressed: () async {
+                          TimeOfDay? endTimePicked = await showTimePicker(
+                            context: context, 
+                            initialTime: toTimeOfDay(selectedEndTimeStr)!,
+                          );
+
+                          if (endTimePicked != null && endTimePicked != toTimeOfDay(selectedEndTimeStr)) {
+                            setState(() {
+                              selectedEndTimeStr = formatTime(endTimePicked);
+                            });
+                          }
+                        },
+                        child: Container(
+                          padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                          decoration: BoxDecoration(
+                            color: AppColorsDark.tertiary,
+                            borderRadius: BorderRadius.circular(8)
+                          ),
+                          child: Text(
+                            selectedEndTimeStr,
+                            style: TextStyle(
+                              fontSize: 18,
+                              color: AppColorsDark.dirtyWhite
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  )
+                ],
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    removeEvent(event);
+                    Navigator.of(context).pop(); // Close the dialog after saving
+                  },
+                  child: Text('Delete'),
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop(); // Close the dialog without saving
+                  },
+                  child: Text('Cancel'),
+                ),
+                TextButton(
+                  onPressed: () {
+                    if (_titleController.text.isNotEmpty) {
+                      DateTime eventStart = DateTime(
+                        selectedDate.year,
+                        selectedDate.month,
+                        selectedDate.day,
+                        toTimeOfDay(selectedStartTimeStr)!.hour,
+                        toTimeOfDay(selectedStartTimeStr)!.minute
+                      );
+                      DateTime eventEnd = DateTime(
+                        selectedDate.year,
+                        selectedDate.month,
+                        selectedDate.day,
+                        toTimeOfDay(selectedEndTimeStr)!.hour,
+                        toTimeOfDay(selectedEndTimeStr)!.minute
+                      );
+                      editEvent(event, _titleController.text, eventStart, eventEnd);
+                      Navigator.of(context).pop(); // Close the dialog after saving
+                    } else { print('not saved');}
+                  },
+                  child: Text('Save'),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
   /// Temporary add event dialog to test adding events to schedule
   /// ...will be replaced by 'add-class' ui
   Future<void> _showAddEventDialog(BuildContext context) async {
@@ -90,7 +311,6 @@ class ScheduleViewState extends ConsumerState<ScheduleView> {
                           TimeOfDay? startTimePicked = await showTimePicker(
                             context: context, 
                             initialTime: selectedStartTime,
-                            initialEntryMode: TimePickerEntryMode.inputOnly,
                           );
 
                           if (startTimePicked != null && startTimePicked != selectedStartTime) {
@@ -107,7 +327,7 @@ class ScheduleViewState extends ConsumerState<ScheduleView> {
                             borderRadius: BorderRadius.circular(8)
                           ),
                           child: Text(
-                            '${((selectedStartTime.hour <= 12) ? selectedStartTime.hour : selectedStartTime.hour - 12).toString().padLeft(2, '0')}:${selectedStartTime.minute.toString().padLeft(2, '0')} ${(selectedStartTime.hour < 12) ? 'AM' : 'PM'}',
+                            formatTime(selectedStartTime),
                             style: TextStyle(
                               fontSize: 18,
                               color: AppColorsDark.dirtyWhite
@@ -121,7 +341,6 @@ class ScheduleViewState extends ConsumerState<ScheduleView> {
                           TimeOfDay? endTimePicked = await showTimePicker(
                             context: context, 
                             initialTime: selectedEndTime,
-                            initialEntryMode: TimePickerEntryMode.inputOnly,
                           );
 
                           if (endTimePicked != null && endTimePicked != selectedEndTime) {
@@ -137,7 +356,7 @@ class ScheduleViewState extends ConsumerState<ScheduleView> {
                             borderRadius: BorderRadius.circular(8)
                           ),
                           child: Text(
-                            '${((selectedEndTime.hour <= 12) ? selectedEndTime.hour : selectedEndTime.hour - 12).toString().padLeft(2, '0')}:${selectedEndTime.minute.toString().padLeft(2, '0')} ${(selectedEndTime.hour < 12) ? 'AM' : 'PM'}',
+                            formatTime(selectedEndTime),
                             style: TextStyle(
                               fontSize: 18,
                               color: AppColorsDark.dirtyWhite
@@ -197,6 +416,16 @@ class ScheduleViewState extends ConsumerState<ScheduleView> {
     _eventController.add(event);
   }
 
+  editEvent(CalendarEventData event, String eventTitle, DateTime eventStart, DateTime eventEnd) {
+    final updated = CalendarEventData(
+      title: eventTitle,
+      date: eventStart,
+      startTime: eventStart,
+      endTime: eventEnd
+    );
+    _eventController.update(event, updated);
+  }
+
   removeEvent(CalendarEventData event) {
     _eventController.remove(event);
   }
@@ -205,9 +434,63 @@ class ScheduleViewState extends ConsumerState<ScheduleView> {
   Widget build(BuildContext context) {
     var dayView = DayView(
       controller: _eventController,
+      eventTileBuilder: (date, events, boundry, start, end) {
+        return Column(
+          children: events.map((event) {
+            return Expanded(
+              child: Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                color: Colors.blue,
+                child: ListTile(
+                  title: Row(
+                    children: [
+                      Text(
+                        event.title,
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w700
+                        ),
+                      ),
+                      Spacer(),
+                      Text(
+                        '${formatTime(getTimeOfDay(event.startTime!))}-${formatTime(getTimeOfDay(event.endTime!))}',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w700
+                        ),
+                      )
+                    ],
+                  ),
+                  // subtitle: Text("Event Details"),
+                )
+              )
+            );
+          }).toList(),
+        );
+      },
       fullDayEventBuilder: (events, date) {
         // Return your widget to display full day event view.
         return Container();
+      },
+      onEventTap:(events, date) {
+        // showDialog(
+        //   context: context,
+        //   builder: (context) => AlertDialog(
+        //     title: Text('Event Details'),
+        //     content: Text(
+        //       'You tapped on events for ${date.toLocal()}. \nEvents: ${events.map((e) => e.title).join(", ")}',
+        //     ),
+        //     actions: [
+        //       TextButton(
+        //         onPressed: () => Navigator.of(context).pop(),
+        //         child: Text('Close'),
+        //       ),
+        //     ],
+        //   ),
+        // );
+        _showEditEventDialog(context, events, date);
       },
       startHour: 8,
       endHour: 22,
@@ -262,7 +545,7 @@ class ScheduleViewState extends ConsumerState<ScheduleView> {
         headerPadding: EdgeInsets.only(left:30, top: 15),
         headerTextStyle: GoogleFonts.roboto(
           color: Colors.white,
-          fontSize: 40,
+          fontSize: 35,
           fontWeight: FontWeight.w500,
         ),
         decoration: BoxDecoration(
