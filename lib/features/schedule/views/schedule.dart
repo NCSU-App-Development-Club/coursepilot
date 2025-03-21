@@ -130,6 +130,7 @@ class ScheduleViewState extends ConsumerState<ScheduleView> {
                   ),
                   SizedBox(height: 10),
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       ElevatedButton(
                         onPressed: () async {
@@ -154,7 +155,7 @@ class ScheduleViewState extends ConsumerState<ScheduleView> {
                           child: Text(
                             selectedStartTimeStr,
                             style: TextStyle(
-                              fontSize: 18,
+                              fontSize: 12,
                               color: AppColorsDark.dirtyWhite
                             ),
                           ),
@@ -183,7 +184,7 @@ class ScheduleViewState extends ConsumerState<ScheduleView> {
                           child: Text(
                             selectedEndTimeStr,
                             style: TextStyle(
-                              fontSize: 18,
+                              fontSize: 12,
                               color: AppColorsDark.dirtyWhite
                             ),
                           ),
@@ -290,7 +291,7 @@ class ScheduleViewState extends ConsumerState<ScheduleView> {
                       }
                     },
                     child: Container(
-                      padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                      padding: EdgeInsets.symmetric(vertical: 5, horizontal: 5),
                       decoration: BoxDecoration(
                         color: AppColorsDark.primary,
                         borderRadius: BorderRadius.circular(8)
@@ -306,8 +307,12 @@ class ScheduleViewState extends ConsumerState<ScheduleView> {
                   ),
                   SizedBox(height: 10),
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       ElevatedButton(
+                        style: ButtonStyle(
+                          padding: WidgetStateProperty.all(EdgeInsets.symmetric(horizontal: 8)),
+                        ),
                         onPressed: () async {
                           TimeOfDay? startTimePicked = await showTimePicker(
                             context: context, 
@@ -330,7 +335,7 @@ class ScheduleViewState extends ConsumerState<ScheduleView> {
                           child: Text(
                             formatTime(selectedStartTime),
                             style: TextStyle(
-                              fontSize: 18,
+                              fontSize: 12,
                               color: AppColorsDark.dirtyWhite
                             ),
                           ),
@@ -338,6 +343,9 @@ class ScheduleViewState extends ConsumerState<ScheduleView> {
                       ),
                       Text('to'),
                       ElevatedButton(
+                        style: ButtonStyle(
+                          padding: WidgetStateProperty.all(EdgeInsets.symmetric(horizontal: 8)),
+                        ),
                         onPressed: () async {
                           TimeOfDay? endTimePicked = await showTimePicker(
                             context: context, 
@@ -359,7 +367,7 @@ class ScheduleViewState extends ConsumerState<ScheduleView> {
                           child: Text(
                             formatTime(selectedEndTime),
                             style: TextStyle(
-                              fontSize: 18,
+                              fontSize: 12,
                               color: AppColorsDark.dirtyWhite
                             ),
                           ),
