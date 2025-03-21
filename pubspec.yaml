@@ -14,6 +14,7 @@ dependencies:
   google_fonts: ^6.2.1
   riverpod_annotation: ^2.6.1
   calendar_view: ^1.4.0
+  intl: ^0.18.0
 
 dev_dependencies:
   flutter_test:
