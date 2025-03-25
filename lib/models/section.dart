@@ -3,7 +3,7 @@ import 'schedule.dart';
 import 'instructor.dart';
 
 class Section {
-    final int number;
+    final String number;
     final String component;
     final int class_id;
     final Availability availability;
