@@ -1,3 +1,4 @@
+import 'package:coursepilot/features/schedule/views/my_schedules.dart';
 import 'package:coursepilot/theme/color_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -15,7 +16,9 @@ class ScheduleView extends ConsumerStatefulWidget {
 class ScheduleViewState extends ConsumerState<ScheduleView> {
   final _eventController = EventController();
   final TextEditingController _titleController = TextEditingController();
-  bool isDayView = true;
+  static const List<String> actions = <String>['Day', 'Week', 'Schedules'];
+  String pageSelected = actions.first;
+  final GlobalKey _menuKey = GlobalKey();
 
   /// Helper function to retrieve TimeOfDay values from DateTime object
   TimeOfDay getTimeOfDay(DateTime dateTime) {
@@ -436,18 +439,18 @@ class ScheduleViewState extends ConsumerState<ScheduleView> {
                   child: Text(
                     event.title,
                     style: TextStyle(
-                      fontSize: isDayView ? 18 : 13,
+                      fontSize: pageSelected == actions.first ? 16 : 12,
                       fontWeight: FontWeight.w700
                     ),
                     overflow: TextOverflow.clip,
                   )
                 ),
-                (isDayView) ? Flexible(
+                (pageSelected == actions.first) ? Flexible(
                   flex: 5,
                   child: Text(
                     '${formatTime(getTimeOfDay(event.startTime!))}-${formatTime(getTimeOfDay(event.endTime!))}',
                     style: TextStyle(
-                      fontSize: isDayView ? 18 : 13,
+                      fontSize: pageSelected == actions.first ? 16 : 12,
                       fontWeight: FontWeight.w700
                     ),
                     overflow: TextOverflow.ellipsis,
@@ -539,7 +542,7 @@ class ScheduleViewState extends ConsumerState<ScheduleView> {
         ],
         eventTileBuilder: (date, events, boundry, start, end) {
           return Column(
-            children: mapEventsFor(isDayView, events)
+            children: mapEventsFor(pageSelected == actions.first, events)
           );
         },
         fullDayEventBuilder: (events, date) {
@@ -551,7 +554,7 @@ class ScheduleViewState extends ConsumerState<ScheduleView> {
       controller: _eventController,
       eventTileBuilder: (date, events, boundry, start, end) {
         return Column(
-          children: mapEventsFor(isDayView, events)
+          children: mapEventsFor(pageSelected == actions.first, events)
         );
       },
       fullDayEventBuilder: (events, date) {
@@ -637,24 +640,51 @@ class ScheduleViewState extends ConsumerState<ScheduleView> {
     );
     return Stack(
       children: [
-        isDayView ? dayView : weekView,
+        pageSelected == actions.first ? dayView : weekView,
         Container(
           alignment: Alignment.topRight,
-          padding: EdgeInsets.only(top: 50, right: 10),
+          padding: EdgeInsets.only(top: 60, right: 0),
+
           child: ElevatedButton(
+            key: _menuKey,
             onPressed: () {
-              // Change to week view
-              setState(() => isDayView = !isDayView);
+              final RenderBox renderBox = _menuKey.currentContext!.findRenderObject() as RenderBox;
+              final offset = renderBox.localToGlobal(Offset.zero);  // Get the position of the top-left corner of the button
+              showMenu(
+                position: RelativeRect.fromLTRB(offset.dx, offset.dy, 0, 0),// RelativeRect.fromLTRB(100, 100, 100, 100),
+                context: context, 
+                items: actions.map<PopupMenuItem<String>>((String value){
+                  return PopupMenuItem<String>(
+                    value: value, 
+                    onTap: () {
+                      setState(() {
+                        if (value == actions[2]) { // Selected Schedules page
+                          Navigator.push(
+                            context, 
+                            MaterialPageRoute(builder: (context) => MySchedules())
+                          );
+                        } else {
+                          pageSelected = value;
+                        }
+                      });
+                    },
+                    child: Text(
+                      value,
+                      style: TextStyle(
+                        fontSize: 14
+                      ),
+                    )
+                  );
+                }).toList(),
+              );
             }, 
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.transparent
             ),
-            child: Text(
-              isDayView ? 'Week' : 'Day',
-              style: TextStyle(
+            child: Icon(
+              Icons.menu,
                 color: AppColorsDark.primary,
-                fontSize: 24,
-              ),
+              size: 40
             ),
           )
         ),
