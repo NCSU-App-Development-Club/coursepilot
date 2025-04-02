@@ -1,8 +1,14 @@
 import 'availability.dart';
 import 'schedule.dart';
 import 'instructor.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-class Section {
+part 'section.freezed.dart';
+part 'section.g.dart';
+
+@freezed
+@JsonSerializable()
+class Section with _$Section {
     final String number;
     final String component;
     final int class_id;
@@ -31,4 +37,8 @@ class Section {
       required this.requisites,
       required this.restrictions,
     });
+
+    factory Section.fromJson(Map<String, Object?> json) => _$SectionFromJson(json);
+
+    Map<String, Object?> toJson() => _$SectionToJson(this);
 }

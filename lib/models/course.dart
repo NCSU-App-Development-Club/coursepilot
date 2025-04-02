@@ -1,6 +1,12 @@
 import 'section.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-class Course {
+part 'course.freezed.dart';
+part 'course.g.dart';
+
+@freezed
+@JsonSerializable()
+class Course with _$Course {
   final String subject;
   final int code;
   final String name;
@@ -17,4 +23,7 @@ class Course {
     required this.sections,
   });
   
+  factory Course.fromJson(Map<String, Object?> json) => _$CourseFromJson(json);
+
+  Map<String, Object?> toJson() => _$CourseToJson(this);
 }
