@@ -37,24 +37,17 @@ class AddClassViewState extends ConsumerState<AddClassView> {
     );
   }
 
-  // regular button for now
+  // No functionality yet
   ElevatedButton _addRemoveClass() {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(backgroundColor: AppColorsDark.primary),
-      //   backgroundColor:
-      //       addClassButton ? Colors.red.shade900 : AppColorsDark.primary,
-      // ),
-      onPressed: () {
-        // setState(() {
-        //   addClassButton = !addClassButton;
-        // });
-      },
+
+      onPressed: () {},
       child: Icon(Icons.add, size: 30),
-      // child: Icon(addClassButton ? Icons.remove : Icons.add, size: 30),
     );
   }
 
-  // TODO: ask about color schema
+  // TODO: add more color schemas
   Color _profRankColor(int number) {
     if (number > 50) {
       return Colors.yellow;
@@ -65,131 +58,174 @@ class AddClassViewState extends ConsumerState<AddClassView> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(6),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        // mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          Align(
-            alignment: Alignment.topLeft,
-            child: Text(
-              'Add Class',
-              // style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
-              style: Theme.of(context).custom.textTheme.titleLargeBold,
-            ),
+    return CustomScrollView(
+      slivers: [
+        SliverAppBar(
+          expandedHeight: 190.0,
+          floating: false,
+          pinned: true,
+          flexibleSpace: LayoutBuilder(
+            builder: (context, constraints) {
+              // print(constraints.maxHeight); SliverAppBar expanded height
+              final double collapsePercent =
+                  (constraints.maxHeight - kToolbarHeight) /
+                  (190.0 - kToolbarHeight);
+
+              final bool isCollapsed = collapsePercent <= 0.8;
+
+              return FlexibleSpaceBar(
+                titlePadding: EdgeInsets.zero,
+                title:
+                    isCollapsed
+                        ? SizedBox(
+                          height: 50,
+                          child: TextField(
+                            decoration: InputDecoration(
+                              filled: true,
+                              fillColor:
+                                  Theme.of(
+                                    context,
+                                  ).custom.colorTheme.foreground,
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(22),
+                              ),
+                              labelText: 'Search Spring 2025 Classes',
+                              prefixIcon: Icon(
+                                Icons.search,
+                                color: AppColorsDark.dirtyWhite,
+                              ),
+                              suffixIcon: IconButton(
+                                onPressed: () {},
+                                icon: Icon(
+                                  Icons.filter_list_alt,
+                                  color: AppColorsDark.dirtyWhite,
+                                ),
+                              ),
+                            ),
+                          ),
+                        )
+                        : const SizedBox.shrink(),
+                background: Padding(
+                  padding: const EdgeInsets.fromLTRB(16.0, 60.0, 16.0, 0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Add Class',
+                        style:
+                            Theme.of(context).custom.textTheme.titleLargeBold,
+                      ),
+                      const SizedBox(height: 16),
+                      TextField(
+                        decoration: InputDecoration(
+                          filled: true,
+                          fillColor:
+                              Theme.of(context).custom.colorTheme.foreground,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(22),
+                          ),
+                          labelText: 'Search Spring 2025 Classes',
+                          prefixIcon: Icon(
+                            Icons.search,
+                            color: AppColorsDark.dirtyWhite,
+                          ),
+                          suffixIcon: Icon(
+                            Icons.filter_list_alt,
+                            color: AppColorsDark.dirtyWhite,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
           ),
-          SizedBox(height: 12),
-          TextField(
-            decoration: InputDecoration(
-              filled: true,
-              fillColor: Theme.of(context).custom.colorTheme.foreground,
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(22),
-              ),
-              labelText: 'Search Spring 2025 Classes',
-              prefixIcon: Icon(Icons.search, color: AppColorsDark.dirtyWhite),
-              suffixIcon: Icon(
-                Icons.filter_list_alt,
-                color: AppColorsDark.dirtyWhite,
-              ),
-            ),
-          ),
-          SizedBox(height: 12),
-          // using dummy api for now
-          Expanded(
-            child: ListView.builder(
-              itemCount: dummyAPI['classes']!.length,
-              itemBuilder: (context, index) {
-                var classData = dummyAPI['classes']![index];
-                var terms = classData['terms'] as List<String>;
-                return Card(
-                  color: Theme.of(context).custom.colorTheme.foreground,
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+        ),
+        SliverList(
+          delegate: SliverChildBuilderDelegate((context, index) {
+            var classData = dummyAPI['classes']![index];
+            var terms = classData['terms'] as List<String>;
+
+            return Card(
+              color: Theme.of(context).custom.colorTheme.foreground,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // class information
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        // class information
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            RichText(
-                              text: TextSpan(
-                                text: '${classData['className']} - ',
-                                style:
-                                    Theme.of(
-                                      context,
-                                    ).custom.textTheme.titleMedium,
-                                children: [
-                                  TextSpan(
-                                    text: classData['classSection'] as String,
-                                    style: TextStyle(
-                                      color: AppColorsDark.primary,
-                                    ),
-                                  ),
-                                ],
+                        RichText(
+                          text: TextSpan(
+                            text: '${classData['className']} - ',
+                            style:
+                                Theme.of(context).custom.textTheme.titleMedium,
+                            children: [
+                              TextSpan(
+                                text: classData['classSection'] as String,
+                                style: TextStyle(color: AppColorsDark.primary),
                               ),
-                            ),
-                            Text(
-                              classData['classSchedule'] as String,
-                              style:
-                                  Theme.of(context).custom.textTheme.subtitle1,
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
-                        const SizedBox(height: 4),
                         Text(
-                          classData['classTitle'] as String,
-                          style: Theme.of(context).custom.textTheme.bodyText1,
-                        ),
-                        const SizedBox(height: 8),
-
-                        // professor
-                        Row(
-                          children: [
-                            CircleAvatar(
-                              backgroundColor: _profRankColor(
-                                classData['profRank'] as int,
-                              ),
-                              child: Text(
-                                '${classData['profRank']}',
-                                style: TextStyle(color: Colors.black),
-                              ),
-                            ),
-                            SizedBox(width: 10),
-                            Text(
-                              classData['profName'] as String,
-                              style:
-                                  Theme.of(context).custom.textTheme.subtitle2,
-                            ),
-                          ],
-                        ),
-
-                        // term and seats
-                        SizedBox(height: 12),
-                        Row(
-                          children: [
-                            _classTerms(terms[0], Colors.green),
-                            SizedBox(width: 8),
-                            _classTerms(terms[1], Colors.brown),
-                            SizedBox(width: 8),
-                            _classSeats(
-                              '${classData['openSeats']}/${classData['maxSeats']}',
-                            ),
-                            Spacer(),
-                            _addRemoveClass(),
-                          ],
+                          classData['classSchedule'] as String,
+                          style: Theme.of(context).custom.textTheme.subtitle1,
                         ),
                       ],
                     ),
-                  ),
-                );
-              },
-            ),
-          ),
-        ],
-      ),
+                    const SizedBox(height: 4),
+                    Text(
+                      classData['classTitle'] as String,
+                      style: Theme.of(context).custom.textTheme.bodyText1,
+                    ),
+                    const SizedBox(height: 8),
+
+                    // professor
+                    Row(
+                      children: [
+                        CircleAvatar(
+                          backgroundColor: _profRankColor(
+                            classData['profRank'] as int,
+                          ),
+                          child: Text(
+                            '${classData['profRank']}',
+                            style: TextStyle(color: Colors.black),
+                          ),
+                        ),
+                        SizedBox(width: 10),
+                        Text(
+                          classData['profName'] as String,
+                          style: Theme.of(context).custom.textTheme.subtitle2,
+                        ),
+                      ],
+                    ),
+
+                    // term and seats
+                    SizedBox(height: 12),
+                    Row(
+                      children: [
+                        _classTerms(terms[0], Colors.green),
+                        SizedBox(width: 8),
+                        _classTerms(terms[1], Colors.brown),
+                        SizedBox(width: 8),
+                        _classSeats(
+                          '${classData['openSeats']}/${classData['maxSeats']}',
+                        ),
+                        Spacer(),
+                        _addRemoveClass(),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            );
+          }, childCount: dummyAPI['classes']!.length),
+        ),
+      ],
     );
   }
 }
@@ -203,6 +239,39 @@ const dummyAPI = {
       "classTitle": "Automated Learning and Data Analysis",
       "profRank": 62,
       "profName": "Thomas Price",
+      "terms": ["Spring", "Fall"],
+      "openSeats": 48,
+      "maxSeats": 60,
+    },
+    {
+      "className": "CSC 510",
+      "classSection": "001",
+      "classSchedule": "MW 11:45AM - 1:00PM",
+      "classTitle": "Software Engineering",
+      "profRank": 39,
+      "profName": "Timothy Menzies",
+      "terms": ["Spring", "Fall"],
+      "openSeats": 48,
+      "maxSeats": 60,
+    },
+    {
+      "className": "CSC 510",
+      "classSection": "001",
+      "classSchedule": "MW 11:45AM - 1:00PM",
+      "classTitle": "Software Engineering",
+      "profRank": 39,
+      "profName": "Timothy Menzies",
+      "terms": ["Spring", "Fall"],
+      "openSeats": 48,
+      "maxSeats": 60,
+    },
+    {
+      "className": "CSC 510",
+      "classSection": "001",
+      "classSchedule": "MW 11:45AM - 1:00PM",
+      "classTitle": "Software Engineering",
+      "profRank": 39,
+      "profName": "Timothy Menzies",
       "terms": ["Spring", "Fall"],
       "openSeats": 48,
       "maxSeats": 60,
