@@ -1,5 +1,4 @@
 import 'package:coursepilot/features/router/controllers/router.dart';
-import 'package:coursepilot/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -39,11 +38,32 @@ class _CourseFireAppState extends ConsumerState<Coursepilot> {
       ),
     );
 
+    final seedColor = Color.fromARGB(255, 242, 249, 255);
+
+    final lightColorScheme = ColorScheme.fromSeed(
+      seedColor: seedColor,
+      brightness: Brightness.light,
+      primary: Color(0xFFCC0000), 
+    );
+
+    final darkColorScheme = ColorScheme.fromSeed(
+      seedColor: seedColor,
+      brightness: Brightness.dark,
+      surface: Color.fromARGB(0, 255, 0, 230),
+      surfaceContainer: Color(0xFF21252B),
+      primary: Color(0xFFCC0000), // Wolfpack Red
+      onPrimary: Color(0xFF990000) // Reynolds Red
+    );
+
     // integrate MaterialApp with custom router
     return MaterialApp.router(
       title: 'Coursepilot',
-      theme: ref.read(darkThemeProvider),
-      darkTheme: ref.read(darkThemeProvider),
+      theme: ThemeData(
+            colorScheme: darkColorScheme.copyWith(),
+          ),
+          darkTheme: ThemeData(
+            colorScheme: darkColorScheme.copyWith(),
+          ),
       routerConfig: routerController,
     );
   }

@@ -1,4 +1,3 @@
-import 'package:coursepilot/theme/theme.dart';
 import 'package:flutter/material.dart';
 
 class NavButton extends StatelessWidget {
@@ -19,9 +18,9 @@ class NavButton extends StatelessWidget {
       onTap: onTap,
       child: Container(
         padding: const EdgeInsets.all(10),
-        child: Icon(icon),
         color:
-            isSelected ? Theme.of(context).custom.colorTheme.background : null,
+            isSelected ? Theme.of(context).colorScheme.onPrimary : null,
+        child: Icon(icon),
       ),
     );
   }
