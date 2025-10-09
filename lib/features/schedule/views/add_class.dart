@@ -81,46 +81,19 @@ class AddClassViewState extends ConsumerState<AddClassView> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+
+    // this is how you'd use the courses riverpod provider
+    // right now, it'll just error.
     final courses = ref.watch(coursesProvider);
+    print("Courses error = ${courses.error}");
 
     return Scaffold(
       body: CustomScrollView(
         slivers: [
-          SliverAppBar(
-            expandedHeight: 190.0,
-            floating: false,
-            pinned: true,
-            flexibleSpace: LayoutBuilder(
-              builder: (context, constraints) {
-                // print(constraints.maxHeight); SliverAppBar expanded height
-                final double collapsePercent =
-                    (constraints.maxHeight - kToolbarHeight) /
-                    (190.0 - kToolbarHeight);
-
-                final bool isCollapsed = collapsePercent <= 0.8;
-
-                return FlexibleSpaceBar(
-                  titlePadding: EdgeInsets.zero,
-                  title:
-                      isCollapsed
-                          ? SizedBox(height: 50, child: _buildSearchBar())
-                          : const SizedBox.shrink(),
-                  background: Padding(
-                    padding: const EdgeInsets.fromLTRB(16.0, 60.0, 16.0, 0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Add Class',
-                          style: Theme.of(context).textTheme.titleLarge,
-                        ),
-                        const SizedBox(height: 16),
-                        _buildSearchBar(),
-                      ],
-                    ),
-                  ),
-                );
-              },
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: _buildSearchBar(),
             ),
           ),
           SliverList(
