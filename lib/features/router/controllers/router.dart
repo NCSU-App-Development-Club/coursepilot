@@ -29,7 +29,24 @@ final routerController = GoRouter(
   ],
 );
 
-class NoTransitionPage<T> extends CustomTransitionPage<T> {
-  NoTransitionPage({required super.child, super.key})
-    : super(transitionsBuilder: (_, __, ___, child) => child);
+class NoTransitionPage<T> extends Page<T> {
+  const NoTransitionPage({
+    required this.child,
+    super.key,
+    super.name,
+    super.arguments,
+    super.restorationId,
+  });
+
+  final Widget child;
+
+  @override
+  Route<T> createRoute(BuildContext context) {
+    return PageRouteBuilder<T>(
+      settings: this,
+      pageBuilder: (context, animation, _) => child,
+      transitionDuration: Duration.zero,
+      reverseTransitionDuration: Duration.zero,
+    );
+  }
 }

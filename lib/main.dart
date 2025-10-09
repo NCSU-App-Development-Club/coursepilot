@@ -1,5 +1,5 @@
+import 'package:calendar_view/calendar_view.dart';
 import 'package:coursepilot/features/router/controllers/router.dart';
-import 'package:coursepilot/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -15,7 +15,9 @@ void main() async {
   );
 
   // run the app with a provider scope (lets us use Riverpod)
-  runApp(const ProviderScope(child: MaterialApp(home: Coursepilot())));
+  // if we weren't using Riverpod we call Coursepilot directly
+  // here in runApp.
+  runApp(const ProviderScope(child: Coursepilot()));
 }
 
 class Coursepilot extends ConsumerStatefulWidget {
@@ -29,6 +31,10 @@ class _CourseFireAppState extends ConsumerState<Coursepilot> {
   @override
   Widget build(BuildContext context) {
     // set status bar and navigation bar colors
+
+    // this is entirely optional, but has some nice stuff
+    // specifically, this prevents your phone from adding
+    // stuff under the navigation UI
     SystemChrome.setSystemUIOverlayStyle(
       const SystemUiOverlayStyle(
         systemNavigationBarColor: Colors.transparent,
@@ -39,12 +45,26 @@ class _CourseFireAppState extends ConsumerState<Coursepilot> {
       ),
     );
 
+    final lightColorScheme = ColorScheme.fromSeed(
+      seedColor: Color.fromARGB(255, 84, 143, 205),
+      brightness: Brightness.light,
+    );
+
+    final darkColorScheme = ColorScheme.fromSeed(
+      seedColor: Color.fromARGB(255, 84, 143, 205),
+      brightness: Brightness.dark,
+      // surface: Colors.black,
+    );
+
     // integrate MaterialApp with custom router
-    return MaterialApp.router(
-      title: 'Coursepilot',
-      theme: ref.read(darkThemeProvider),
-      darkTheme: ref.read(darkThemeProvider),
-      routerConfig: routerController,
+    return CalendarControllerProvider(
+      controller: EventController(),
+      child: MaterialApp.router(
+        title: 'Coursepilot',
+        theme: ThemeData(colorScheme: lightColorScheme),
+        darkTheme: ThemeData(colorScheme: darkColorScheme),
+        routerConfig: routerController,
+      ),
     );
   }
 }
