@@ -11,11 +11,13 @@ class AddClassView extends ConsumerStatefulWidget {
 class AddClassViewState extends ConsumerState<AddClassView> {
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Text(
-        'Add class Page (schedule/views/add_class.dart)',
-        textAlign: TextAlign.center,
-        style: Theme.of(context).textTheme.titleLarge,
+    return Scaffold(
+      body: Center(
+        child: Text(
+          'Add class Page (schedule/views/add_class.dart)',
+          textAlign: TextAlign.center,
+          style: Theme.of(context).textTheme.titleLarge,
+        ),
       ),
     );
   }

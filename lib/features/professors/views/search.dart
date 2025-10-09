@@ -11,11 +11,13 @@ class SearchView extends ConsumerStatefulWidget {
 class SearchViewState extends ConsumerState<SearchView> {
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Text(
-        'Search Professors Page (professors/views/search.dart)',
-        textAlign: TextAlign.center,
-        style: Theme.of(context).textTheme.titleLarge,
+    return Scaffold(
+      body: Center(
+        child: Text(
+          'Search Professors Page (professors/views/search.dart)',
+          textAlign: TextAlign.center,
+          style: Theme.of(context).textTheme.titleLarge,
+        ),
       ),
     );
   }
