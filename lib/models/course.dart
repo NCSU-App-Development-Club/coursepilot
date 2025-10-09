@@ -1,12 +1,10 @@
+import 'package:dart_mappable/dart_mappable.dart';
+
 import 'section.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
+part 'course.mapper.dart';
 
-part 'course.freezed.dart';
-part 'course.g.dart';
-
-@freezed
-@JsonSerializable()
-class Course with _$Course {
+@MappableClass()
+class Course with CourseMappable {
   final String subject;
   final int code;
   final String name;
@@ -22,8 +20,4 @@ class Course with _$Course {
     required this.credits,
     required this.sections,
   });
-  
-  factory Course.fromJson(Map<String, Object?> json) => _$CourseFromJson(json);
-
-  Map<String, Object?> toJson() => _$CourseToJson(this);
 }

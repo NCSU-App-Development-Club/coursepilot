@@ -15,21 +15,20 @@ dependencies:
   riverpod_annotation: ^2.6.1
   calendar_view: ^1.4.0
   intl: ^0.18.0
-  freezed_annotation: ^3.0.0
   json_annotation: ^4.9.0
   kalender: ^0.13.0
+  dart_mappable: ^4.6.1
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^5.0.0
   riverpod_generator: ^2.6.5
-  build_runner: ^2.4.15
+  build_runner: ^2.5.4
   custom_lint: ^0.7.5
   riverpod_lint: ^2.6.5
-  freezed: ^3.0.4
-  json_serializable: ^6.9.4
   test: ^1.25.15
+  dart_mappable_builder: ^4.5.0
 
 flutter:
   uses-material-design: true

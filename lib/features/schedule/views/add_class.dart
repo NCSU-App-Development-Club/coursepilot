@@ -40,6 +40,7 @@ class AddClassViewState extends ConsumerState<AddClassView> {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
         backgroundColor: Theme.of(context).colorScheme.primary,
+        foregroundColor: Theme.of(context).colorScheme.onSurface,
       ),
 
       onPressed: () {},
