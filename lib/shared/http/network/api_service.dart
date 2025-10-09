@@ -1,5 +1,5 @@
-import 'package:coursepilot/features/http/network/http_client.dart';
-import 'package:coursepilot/features/http/config/api_config.dart';
+import 'package:coursepilot/shared/http/network/http_client.dart';
+import 'package:coursepilot/shared/http/config/api_config.dart';
 import 'package:coursepilot/models/course.dart';
 
 /// Core service for fetching from

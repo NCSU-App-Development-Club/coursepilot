@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:coursepilot/features/http/config/api_config.dart';
+import 'package:coursepilot/shared/http/config/api_config.dart';
 
 final httpClient = Dio(
   BaseOptions(

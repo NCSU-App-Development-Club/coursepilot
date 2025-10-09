@@ -1,3 +1,4 @@
+import 'package:coursepilot/features/schedule/repositories/courses.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -80,131 +81,134 @@ class AddClassViewState extends ConsumerState<AddClassView> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final courses = ref.watch(coursesProvider);
 
-    return CustomScrollView(
-      slivers: [
-        SliverAppBar(
-          expandedHeight: 190.0,
-          floating: false,
-          pinned: true,
-          flexibleSpace: LayoutBuilder(
-            builder: (context, constraints) {
-              // print(constraints.maxHeight); SliverAppBar expanded height
-              final double collapsePercent =
-                  (constraints.maxHeight - kToolbarHeight) /
-                  (190.0 - kToolbarHeight);
+    return Scaffold(
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            expandedHeight: 190.0,
+            floating: false,
+            pinned: true,
+            flexibleSpace: LayoutBuilder(
+              builder: (context, constraints) {
+                // print(constraints.maxHeight); SliverAppBar expanded height
+                final double collapsePercent =
+                    (constraints.maxHeight - kToolbarHeight) /
+                    (190.0 - kToolbarHeight);
 
-              final bool isCollapsed = collapsePercent <= 0.8;
+                final bool isCollapsed = collapsePercent <= 0.8;
 
-              return FlexibleSpaceBar(
-                titlePadding: EdgeInsets.zero,
-                title:
-                    isCollapsed
-                        ? SizedBox(height: 50, child: _buildSearchBar())
-                        : const SizedBox.shrink(),
-                background: Padding(
-                  padding: const EdgeInsets.fromLTRB(16.0, 60.0, 16.0, 0),
+                return FlexibleSpaceBar(
+                  titlePadding: EdgeInsets.zero,
+                  title:
+                      isCollapsed
+                          ? SizedBox(height: 50, child: _buildSearchBar())
+                          : const SizedBox.shrink(),
+                  background: Padding(
+                    padding: const EdgeInsets.fromLTRB(16.0, 60.0, 16.0, 0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Add Class',
+                          style: Theme.of(context).textTheme.titleLarge,
+                        ),
+                        const SizedBox(height: 16),
+                        _buildSearchBar(),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+          SliverList(
+            delegate: SliverChildBuilderDelegate((context, index) {
+              var classData = dummyAPI['classes']![index];
+              var terms = classData['terms'] as List<String>;
+
+              return Card(
+                color: theme.colorScheme.surfaceContainer,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        'Add Class',
-                        style: Theme.of(context).textTheme.titleLarge,
+                      // class information
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          RichText(
+                            text: TextSpan(
+                              text: '${classData['className']} - ',
+                              style: Theme.of(context).textTheme.titleMedium,
+                              children: [
+                                TextSpan(
+                                  text: classData['classSection'] as String,
+                                  style: TextStyle(
+                                    color: theme.colorScheme.primary,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Text(
+                            classData['classSchedule'] as String,
+                            style: theme.textTheme.labelSmall,
+                          ),
+                        ],
                       ),
-                      const SizedBox(height: 16),
-                      _buildSearchBar(),
+                      const SizedBox(height: 4),
+                      Text(
+                        classData['classTitle'] as String,
+                        style: theme.textTheme.bodyMedium,
+                      ),
+                      const SizedBox(height: 8),
+
+                      // professor
+                      Row(
+                        children: [
+                          CircleAvatar(
+                            backgroundColor: _profRankColor(
+                              classData['profRank'] as int,
+                            ),
+                            child: Text(
+                              '${classData['profRank']}',
+                              style: TextStyle(color: Colors.black),
+                            ),
+                          ),
+                          SizedBox(width: 10),
+                          Text(
+                            classData['profName'] as String,
+                            style: theme.textTheme.labelMedium,
+                          ),
+                        ],
+                      ),
+
+                      // term and seats
+                      SizedBox(height: 12),
+                      Row(
+                        children: [
+                          _buildClassTerms(terms[0], Colors.green),
+                          SizedBox(width: 8),
+                          _buildClassTerms(terms[1], Colors.brown),
+                          SizedBox(width: 8),
+                          _buildClassSeats(
+                            '${classData['openSeats']}/${classData['maxSeats']}',
+                          ),
+                          Spacer(),
+                          _addRemoveClass(),
+                        ],
+                      ),
                     ],
                   ),
                 ),
               );
-            },
+            }, childCount: dummyAPI['classes']!.length),
           ),
-        ),
-        SliverList(
-          delegate: SliverChildBuilderDelegate((context, index) {
-            var classData = dummyAPI['classes']![index];
-            var terms = classData['terms'] as List<String>;
-
-            return Card(
-              color: theme.colorScheme.surfaceContainer,
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // class information
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        RichText(
-                          text: TextSpan(
-                            text: '${classData['className']} - ',
-                            style: Theme.of(context).textTheme.titleMedium,
-                            children: [
-                              TextSpan(
-                                text: classData['classSection'] as String,
-                                style: TextStyle(
-                                  color: theme.colorScheme.primary,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Text(
-                          classData['classSchedule'] as String,
-                          style: theme.textTheme.labelSmall,
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      classData['classTitle'] as String,
-                      style: theme.textTheme.bodyMedium,
-                    ),
-                    const SizedBox(height: 8),
-
-                    // professor
-                    Row(
-                      children: [
-                        CircleAvatar(
-                          backgroundColor: _profRankColor(
-                            classData['profRank'] as int,
-                          ),
-                          child: Text(
-                            '${classData['profRank']}',
-                            style: TextStyle(color: Colors.black),
-                          ),
-                        ),
-                        SizedBox(width: 10),
-                        Text(
-                          classData['profName'] as String,
-                          style: theme.textTheme.labelMedium,
-                        ),
-                      ],
-                    ),
-
-                    // term and seats
-                    SizedBox(height: 12),
-                    Row(
-                      children: [
-                        _buildClassTerms(terms[0], Colors.green),
-                        SizedBox(width: 8),
-                        _buildClassTerms(terms[1], Colors.brown),
-                        SizedBox(width: 8),
-                        _buildClassSeats(
-                          '${classData['openSeats']}/${classData['maxSeats']}',
-                        ),
-                        Spacer(),
-                        _addRemoveClass(),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            );
-          }, childCount: dummyAPI['classes']!.length),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
