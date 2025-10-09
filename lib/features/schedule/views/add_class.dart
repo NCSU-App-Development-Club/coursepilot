@@ -1,5 +1,3 @@
-import 'package:coursepilot/theme/color_theme.dart';
-import 'package:coursepilot/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -40,7 +38,9 @@ class AddClassViewState extends ConsumerState<AddClassView> {
   // No functionality yet
   ElevatedButton _addRemoveClass() {
     return ElevatedButton(
-      style: ElevatedButton.styleFrom(backgroundColor: AppColorsDark.primary),
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Theme.of(context).colorScheme.primary,
+      ),
 
       onPressed: () {},
       child: Icon(Icons.add, size: 30),
@@ -56,8 +56,14 @@ class AddClassViewState extends ConsumerState<AddClassView> {
     }
   }
 
+  Widget _buildSearchBar() {
+    return SearchBar(hintText: "Search Spring 2025 Classes");
+  }
+
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return CustomScrollView(
       slivers: [
         SliverAppBar(
@@ -77,33 +83,7 @@ class AddClassViewState extends ConsumerState<AddClassView> {
                 titlePadding: EdgeInsets.zero,
                 title:
                     isCollapsed
-                        ? SizedBox(
-                          height: 50,
-                          child: TextField(
-                            decoration: InputDecoration(
-                              filled: true,
-                              fillColor:
-                                  Theme.of(
-                                    context,
-                                  ).custom.colorTheme.foreground,
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(22),
-                              ),
-                              labelText: 'Search Spring 2025 Classes',
-                              prefixIcon: Icon(
-                                Icons.search,
-                                color: AppColorsDark.dirtyWhite,
-                              ),
-                              suffixIcon: IconButton(
-                                onPressed: () {},
-                                icon: Icon(
-                                  Icons.filter_list_alt,
-                                  color: AppColorsDark.dirtyWhite,
-                                ),
-                              ),
-                            ),
-                          ),
-                        )
+                        ? SizedBox(height: 50, child: _buildSearchBar())
                         : const SizedBox.shrink(),
                 background: Padding(
                   padding: const EdgeInsets.fromLTRB(16.0, 60.0, 16.0, 0),
@@ -112,29 +92,10 @@ class AddClassViewState extends ConsumerState<AddClassView> {
                     children: [
                       Text(
                         'Add Class',
-                        style:
-                            Theme.of(context).custom.textTheme.titleLargeBold,
+                        style: Theme.of(context).textTheme.titleLarge,
                       ),
                       const SizedBox(height: 16),
-                      TextField(
-                        decoration: InputDecoration(
-                          filled: true,
-                          fillColor:
-                              Theme.of(context).custom.colorTheme.foreground,
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(22),
-                          ),
-                          labelText: 'Search Spring 2025 Classes',
-                          prefixIcon: Icon(
-                            Icons.search,
-                            color: AppColorsDark.dirtyWhite,
-                          ),
-                          suffixIcon: Icon(
-                            Icons.filter_list_alt,
-                            color: AppColorsDark.dirtyWhite,
-                          ),
-                        ),
-                      ),
+                      _buildSearchBar(),
                     ],
                   ),
                 ),
@@ -148,7 +109,7 @@ class AddClassViewState extends ConsumerState<AddClassView> {
             var terms = classData['terms'] as List<String>;
 
             return Card(
-              color: Theme.of(context).custom.colorTheme.foreground,
+              color: theme.colorScheme.surfaceContainer,
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Column(
@@ -161,26 +122,27 @@ class AddClassViewState extends ConsumerState<AddClassView> {
                         RichText(
                           text: TextSpan(
                             text: '${classData['className']} - ',
-                            style:
-                                Theme.of(context).custom.textTheme.titleMedium,
+                            style: Theme.of(context).textTheme.titleMedium,
                             children: [
                               TextSpan(
                                 text: classData['classSection'] as String,
-                                style: TextStyle(color: AppColorsDark.primary),
+                                style: TextStyle(
+                                  color: theme.colorScheme.primary,
+                                ),
                               ),
                             ],
                           ),
                         ),
                         Text(
                           classData['classSchedule'] as String,
-                          style: Theme.of(context).custom.textTheme.subtitle1,
+                          style: theme.textTheme.labelSmall,
                         ),
                       ],
                     ),
                     const SizedBox(height: 4),
                     Text(
                       classData['classTitle'] as String,
-                      style: Theme.of(context).custom.textTheme.bodyText1,
+                      style: theme.textTheme.bodyMedium,
                     ),
                     const SizedBox(height: 8),
 
@@ -199,7 +161,7 @@ class AddClassViewState extends ConsumerState<AddClassView> {
                         SizedBox(width: 10),
                         Text(
                           classData['profName'] as String,
-                          style: Theme.of(context).custom.textTheme.subtitle2,
+                          style: theme.textTheme.labelMedium,
                         ),
                       ],
                     ),
