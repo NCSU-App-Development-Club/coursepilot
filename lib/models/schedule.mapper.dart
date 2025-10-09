@@ -24,10 +24,10 @@ class ScheduleMapper extends ClassMapperBase<Schedule> {
   static const Field<Schedule, List<String>> _f$days = Field('days', _$days);
   static DateTime _$beginTime(Schedule v) => v.beginTime;
   static const Field<Schedule, DateTime> _f$beginTime =
-      Field('beginTime', _$beginTime);
+      Field('beginTime', _$beginTime, key: r'begin_time');
   static DateTime _$endTime(Schedule v) => v.endTime;
   static const Field<Schedule, DateTime> _f$endTime =
-      Field('endTime', _$endTime);
+      Field('endTime', _$endTime, key: r'end_time');
 
   @override
   final MappableFields<Schedule> fields = const {

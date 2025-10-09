@@ -1,6 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+/*
+yo, Eric here.
+
+This was originally a bit different, but I've modified it
+to use the new theme system. Essentially, using Theme.of(context).colorScheme
+is nice because it's reactive to the system's theme. This means
+that implementing light theme is also quite easy,
+if you use this correctly.
+
+For example, Theme.of(context).colorScheme.surface is the background color.
+you can then use .colorScheme.onSurface, which is vaguely an inverse of surface.
+This means that anything with the `onSurface` color will always be visible on
+a `surface`. Flutter itself handles the exact generation of this when I generate
+the theme via .fromSeed in main.dart.
+*/
+
 class AddClassView extends ConsumerStatefulWidget {
   const AddClassView({super.key});
 
@@ -11,7 +27,7 @@ class AddClassView extends ConsumerStatefulWidget {
 class AddClassViewState extends ConsumerState<AddClassView> {
   // bool addClassButton = false;
 
-  Container _classTerms(String text, Color color) {
+  Container _buildClassTerms(String text, Color color) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
@@ -25,7 +41,7 @@ class AddClassViewState extends ConsumerState<AddClassView> {
     );
   }
 
-  Row _classSeats(String seats) {
+  Row _buildClassSeats(String seats) {
     return Row(
       children: [
         Icon(Icons.chair_alt, color: Colors.white),
@@ -40,7 +56,7 @@ class AddClassViewState extends ConsumerState<AddClassView> {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
         backgroundColor: Theme.of(context).colorScheme.primary,
-        foregroundColor: Theme.of(context).colorScheme.onSurface,
+        foregroundColor: Theme.of(context).colorScheme.surface,
       ),
 
       onPressed: () {},
@@ -171,11 +187,11 @@ class AddClassViewState extends ConsumerState<AddClassView> {
                     SizedBox(height: 12),
                     Row(
                       children: [
-                        _classTerms(terms[0], Colors.green),
+                        _buildClassTerms(terms[0], Colors.green),
                         SizedBox(width: 8),
-                        _classTerms(terms[1], Colors.brown),
+                        _buildClassTerms(terms[1], Colors.brown),
                         SizedBox(width: 8),
-                        _classSeats(
+                        _buildClassSeats(
                           '${classData['openSeats']}/${classData['maxSeats']}',
                         ),
                         Spacer(),
@@ -193,6 +209,15 @@ class AddClassViewState extends ConsumerState<AddClassView> {
   }
 }
 
+/*
+While this was definitely useful for the individual that wrote it,
+but it should likely be changed. In the lib/models folder,
+there should be models to correctly represent the actual data
+that will be fetched. In general, one should never directly
+fetch data from an API and simply use the json response. You
+first want to put it into a model. This part is easier with
+dart_mappable, a library we use for that very reason.
+*/
 const dummyAPI = {
   "classes": [
     {

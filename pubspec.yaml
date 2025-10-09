@@ -18,6 +18,7 @@ dependencies:
   json_annotation: ^4.9.0
   kalender: ^0.13.0
   dart_mappable: ^4.6.1
+  dio: ^5.9.0
 
 dev_dependencies:
   flutter_test:

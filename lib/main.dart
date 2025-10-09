@@ -45,6 +45,19 @@ class _CourseFireAppState extends ConsumerState<Coursepilot> {
       ),
     );
 
+    /*
+    Flutter has a really cool thing where it will generate a theme
+    for you from a color. You can set the seed to whatever you want
+    (try it!), and the entire app will sort of change in tint. This
+    also means that (for the most part), if you use a combination of colors
+    (say Theme.of(context).colorScheme.onSurface) on top of other colors (like 
+    colorScheme.surface), no matter if it's dark or light theme, this
+    combination will always contain the same amount of legibility.
+
+    It does mean that it's impossible to mock up colors exactly in Figma,
+    but for the sake of this sort of app this is completely fine.
+    */
+
     final lightColorScheme = ColorScheme.fromSeed(
       seedColor: Color.fromARGB(255, 84, 143, 205),
       brightness: Brightness.light,

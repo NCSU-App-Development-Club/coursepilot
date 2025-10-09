@@ -29,7 +29,8 @@ class SectionMapper extends ClassMapperBase<Section> {
   static const Field<Section, String> _f$component =
       Field('component', _$component);
   static int _$classId(Section v) => v.classId;
-  static const Field<Section, int> _f$classId = Field('classId', _$classId);
+  static const Field<Section, int> _f$classId =
+      Field('classId', _$classId, key: r'class_id');
   static Availability _$availability(Section v) => v.availability;
   static const Field<Section, Availability> _f$availability =
       Field('availability', _$availability);
@@ -44,10 +45,10 @@ class SectionMapper extends ClassMapperBase<Section> {
       Field('instructor', _$instructor);
   static DateTime _$beginDate(Section v) => v.beginDate;
   static const Field<Section, DateTime> _f$beginDate =
-      Field('beginDate', _$beginDate);
+      Field('beginDate', _$beginDate, key: r'begin_date');
   static DateTime _$endDate(Section v) => v.endDate;
   static const Field<Section, DateTime> _f$endDate =
-      Field('endDate', _$endDate);
+      Field('endDate', _$endDate, key: r'end_date');
   static String _$notes(Section v) => v.notes;
   static const Field<Section, String> _f$notes = Field('notes', _$notes);
   static String _$requisites(Section v) => v.requisites;
