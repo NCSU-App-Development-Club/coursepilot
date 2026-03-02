@@ -1,4 +1,7 @@
 import 'package:coursepilot/pages/home/home_page.dart';
+import 'package:coursepilot/pages/course_info/course_info_page.dart';
+import 'package:coursepilot/pages/search/search_page.dart';
+import 'package:coursepilot/pages/section_info/section_info_page.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -22,7 +25,12 @@ class MyApp extends StatelessWidget {
       ),
 
       // These are the pages of your application
-      routes: {"/": (context) => HomePage()},
+      routes: {
+        "/": (context) => const HomePage(),
+        "/search": (context) => const SearchPage(),
+        "/course_info": (context) => const CourseInfoPage(),
+        "/section_info": (context) => const SectionInfoPage(),
+      },
       initialRoute: "/",
     );
   }

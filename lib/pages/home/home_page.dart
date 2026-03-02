@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+// enum ViewMode { list, schedule, ...(IconData, View) }
+
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
@@ -20,7 +22,7 @@ class HomePage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          onPressed: () => {},
+          onPressed: _onMenuButtonPressed,
           icon: const Icon(Icons.keyboard_arrow_down),
         ),
 
@@ -28,8 +30,8 @@ class HomePage extends StatelessWidget {
 
         actions: [
           IconButton(
-            onPressed: () => {},
-            icon: const Icon(Icons.calendar_month),
+            onPressed: _onToggleView,
+            icon: const Icon(Icons.view_list),
           ),
           IconButton(onPressed: () => {}, icon: const Icon(Icons.more_vert)),
         ],
@@ -38,9 +40,7 @@ class HomePage extends StatelessWidget {
       body: const Center(child: Text('Welcome to the Home Page!')),
 
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // Add your action here
-        },
+        onPressed: _onAddButtonPressed,
         child: const Icon(Icons.add),
       ),
     );
