@@ -1,5 +1,4 @@
 import 'package:coursepilot/pages/home/home_page.dart';
-import 'package:coursepilot/pages/search/search_page.dart';
 import 'package:coursepilot/services/api_service.dart';
 import 'package:coursepilot/services/schedule_service.dart';
 import 'package:flutter/material.dart';
@@ -30,7 +29,7 @@ class MyApp extends StatelessWidget {
       title: 'coursepilot',
       theme: ThemeData(
         // This is the theme of your application.
-        colorScheme: .fromSeed(seedColor: Colors.red),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.red),
       ),
 
       home: const HomePage(),

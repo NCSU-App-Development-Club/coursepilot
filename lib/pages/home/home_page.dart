@@ -20,6 +20,10 @@ class HomePage extends StatelessWidget {
     // TODO: Implement add button action
   }
 
+  void _onMoreButtonPressed() {
+    // TODO: Implement more button action
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -45,7 +49,10 @@ class HomePage extends StatelessWidget {
             onPressed: _onToggleView,
             icon: const Icon(Icons.view_list),
           ),
-          IconButton(onPressed: () => {}, icon: const Icon(Icons.more_vert)),
+          IconButton(
+            onPressed: _onMoreButtonPressed,
+            icon: const Icon(Icons.more_vert),
+          ),
         ],
       ),
 
