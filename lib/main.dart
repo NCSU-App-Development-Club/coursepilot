@@ -1,10 +1,21 @@
 import 'package:coursepilot/pages/home/home_page.dart';
-import 'package:coursepilot/pages/course_info/course_info_page.dart';
 import 'package:coursepilot/pages/search/search_page.dart';
-import 'package:coursepilot/pages/section_info/section_info_page.dart';
+import 'package:coursepilot/services/api_service.dart';
+import 'package:coursepilot/services/schedule_service.dart';
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:get_it/get_it.dart';
 
-void main() {
+final getIt = GetIt.instance;
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Hive.initFlutter();
+  final scheduleBox = await Hive.openBox<String>('schedules');
+
+  getIt.registerSingleton<ApiService>(ApiService());
+  getIt.registerSingleton<ScheduleService>(ScheduleService(scheduleBox));
+
   runApp(const MyApp());
 }
 
@@ -16,22 +27,13 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-
       title: 'coursepilot',
-
       theme: ThemeData(
         // This is the theme of your application.
         colorScheme: .fromSeed(seedColor: Colors.red),
       ),
 
-      // These are the pages of your application
-      routes: {
-        "/": (context) => const HomePage(),
-        "/search": (context) => const SearchPage(),
-        "/course_info": (context) => const CourseInfoPage(),
-        "/section_info": (context) => const SectionInfoPage(),
-      },
-      initialRoute: "/",
+      home: const HomePage(),
     );
   }
 }

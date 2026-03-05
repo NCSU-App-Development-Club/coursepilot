@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widget_previews.dart';
+
+import 'components/debug_navigation_modal.dart';
 
 // enum ViewMode { list, schedule, ...(IconData, View) }
 
@@ -29,6 +32,15 @@ class HomePage extends StatelessWidget {
         title: const Text('Schedule'),
 
         actions: [
+          IconButton(
+            onPressed: () {
+              showModalBottomSheet(
+                context: context,
+                builder: (context) => const DebugNavigationModal(),
+              );
+            },
+            icon: const Icon(Icons.bug_report),
+          ),
           IconButton(
             onPressed: _onToggleView,
             icon: const Icon(Icons.view_list),
