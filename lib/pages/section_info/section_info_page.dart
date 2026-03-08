@@ -4,6 +4,9 @@ import 'package:flutter/material.dart';
 class SectionInfoPage extends StatelessWidget {
   final SectionDetail section;
 
+  // TODO: Implement the section info page per the design specifications.
+  // 
+
   const SectionInfoPage({super.key, required this.section});
 
   @override

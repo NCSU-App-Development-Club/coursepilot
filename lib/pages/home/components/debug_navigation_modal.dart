@@ -1,5 +1,6 @@
 import 'package:coursepilot/models/models.dart';
 import 'package:coursepilot/pages/course_info/course_info_page.dart';
+import 'package:coursepilot/pages/search/search_page.dart';
 import 'package:coursepilot/pages/section_info/section_info_page.dart';
 import 'package:flutter/material.dart';
 
@@ -55,13 +56,22 @@ class DebugNavigationModal extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           ListTile(
+            leading: const Icon(Icons.search),
+            title: const Text('Search Page'),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const SearchPage()),
+              );
+            },
+          ),
+          ListTile(
             leading: const Icon(Icons.book),
             title: const Text('Course Info Page'),
             subtitle: Text(
               '${_dummyCourse.prefix} ${_dummyCourse.number} - ${_dummyCourse.name}',
             ),
             onTap: () {
-              Navigator.pop(context);
               Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -78,7 +88,6 @@ class DebugNavigationModal extends StatelessWidget {
               'Section ${_dummySection.number}',
             ),
             onTap: () {
-              Navigator.pop(context);
               Navigator.push(
                 context,
                 MaterialPageRoute(

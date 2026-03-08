@@ -1,3 +1,5 @@
+import 'package:coursepilot/pages/search/views/lookup_course_view.dart';
+import 'package:coursepilot/pages/search/views/search_courses_view.dart';
 import 'package:flutter/material.dart';
 
 class SearchPage extends StatelessWidget {
@@ -5,9 +7,22 @@ class SearchPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Search')),
-      body: const Center(child: Text('Search Page Placeholder')),
+    return DefaultTabController(
+      length: 2,
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Search'),
+          bottom: const TabBar(
+            tabs: [
+              Tab(text: 'Lookup'),
+              Tab(text: 'Search'),
+            ],
+          ),
+        ),
+        body: const TabBarView(
+          children: [LookupCourseView(), SearchCoursesView()],
+        ),
+      ),
     );
   }
 }

@@ -1,19 +1,49 @@
+import 'package:coursepilot/pages/home/components/section_bottom_sheet.dart';
+import 'package:coursepilot/pages/home/views/calendar_view.dart';
+import 'package:coursepilot/pages/home/views/course_list_view.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widget_previews.dart';
 
 import 'components/debug_navigation_modal.dart';
 
-// enum ViewMode { list, schedule, ...(IconData, View) }
+enum View {
+  calendar(Icons.list, CalendarView()),
+  list(Icons.calendar_month, CourseListView());
 
-class HomePage extends StatelessWidget {
+  final IconData icon;
+  final Widget view;
+
+  const View(this.icon, this.view);
+}
+
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  View _currentView = View.calendar;
 
   void _onMenuButtonPressed() {
     // TODO: Implement menu button action
   }
 
   void _onToggleView() {
-    // TODO: Implement toggle view action
+    switch (_currentView) {
+      case View.calendar:
+        setState(() {
+          _currentView = View.list;
+        });
+
+        break;
+      case View.list:
+        setState(() {
+          _currentView = View.calendar;
+        });
+
+        break;
+    }
   }
 
   void _onAddButtonPressed() {
@@ -22,6 +52,13 @@ class HomePage extends StatelessWidget {
 
   void _onMoreButtonPressed() {
     // TODO: Implement more button action
+  }
+
+  void _onSectionPressed() {
+    showModalBottomSheet(
+      context: context,
+      builder: (_) => SectionBottomSheet(),
+    );
   }
 
   @override
@@ -46,9 +83,10 @@ class HomePage extends StatelessWidget {
             icon: const Icon(Icons.bug_report),
           ),
           IconButton(
-            onPressed: _onToggleView,
-            icon: const Icon(Icons.view_list),
+            onPressed: _onSectionPressed,
+            icon: Icon(Icons.bug_report),
           ),
+          IconButton(onPressed: _onToggleView, icon: Icon(_currentView.icon)),
           IconButton(
             onPressed: _onMoreButtonPressed,
             icon: const Icon(Icons.more_vert),
@@ -56,7 +94,7 @@ class HomePage extends StatelessWidget {
         ],
       ),
 
-      body: const Center(child: Text('Welcome to the Home Page!')),
+      body: _currentView.view,
 
       floatingActionButton: FloatingActionButton(
         onPressed: _onAddButtonPressed,
