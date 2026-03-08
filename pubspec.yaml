@@ -39,6 +39,7 @@ dependencies:
   uuid: ^4.5.3
   http: ^1.6.0
   get_it: ^9.2.1
+  table_calendar: ^3.2.0
 
 dev_dependencies:
   flutter_test:
