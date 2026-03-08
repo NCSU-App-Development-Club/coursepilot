@@ -25,8 +25,11 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   View _currentView = View.calendar;
 
-  void _onMenuButtonPressed() {
-    // TODO: Implement menu button action
+  // TODO: Implement the schedule dropdown button to show Schedule 1, Schedule 2, etc and allow switching between them
+  // TODO: Implement the more button to show options like Duplicate, Edit, Delete, etc
+
+  void _onScheduleDropdownButtonPressed() {
+    // TODO: Implement schedule dropdown button action
   }
 
   void _onToggleView() {
@@ -66,7 +69,7 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          onPressed: _onMenuButtonPressed,
+          onPressed: _onScheduleDropdownButtonPressed,
           icon: const Icon(Icons.keyboard_arrow_down),
         ),
 
