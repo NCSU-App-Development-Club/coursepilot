@@ -15,8 +15,8 @@ class SectionBottomSheet extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             mainAxisSize: MainAxisSize.max,
             children: [
-              IconButton.outlined(onPressed: null, icon: Icon(Icons.delete)),
-              IconButton.outlined(onPressed: null, icon: Icon(Icons.delete)),
+              IconButton.outlined(onPressed: null, icon: Icon(Icons.notifications)),
+              IconButton.outlined(onPressed: null, icon: Icon(Icons.keyboard_arrow_down)),
               IconButton.outlined(onPressed: null, icon: Icon(Icons.delete)),
             ],
           ),
@@ -32,6 +32,46 @@ class SectionBottomSheet extends StatelessWidget {
               Text(
                 "Data Structures & Algorithms",
                 style: Theme.of(context).textTheme.headlineSmall,
+              ),
+            ],
+          ),
+          Row( //Time to meet
+            spacing: 20,
+            children: [
+              IconButton.outlined(onPressed: null, icon: Icon(Icons.schedule)),
+              Text("Mon, Wed 10:15 AM - 11:30 AM",
+                style: Theme.of(context).textTheme.headlineSmall,
+              ),
+            ],
+          ),
+          Row( //Location
+            spacing: 20,
+            children: [
+              IconButton.outlined(onPressed: null, icon: Icon(Icons.location_on)),
+              Text("(Centennial Campus) Hill Library 4016",
+                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                  color: Colors.blue,
+                ),
+              ),
+            ],
+          ),
+          Row(//Instructor name
+            spacing: 20,
+            children: [
+              IconButton.outlined(onPressed: null, icon: Icon(Icons.person)),
+              Text("Jamie Jennings",
+                style: Theme.of(context).textTheme.headlineSmall,
+              ),
+            ],
+          ),
+          Row(//Seats available
+            spacing: 20,
+            children: [
+              IconButton.outlined(onPressed: null, icon: Icon(Icons.groups)),
+              Text("Closed, 0/50 seats available",
+                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                  color: Colors.red,
+                )
               ),
             ],
           ),

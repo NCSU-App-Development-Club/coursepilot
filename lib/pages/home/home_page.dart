@@ -60,7 +60,11 @@ class _HomePageState extends State<HomePage> {
   void _onSectionPressed() {
     showModalBottomSheet(
       context: context,
-      builder: (_) => SectionBottomSheet(),
+      builder: (_) => SizedBox(
+        height: MediaQuery.of(context).size.height * 0.65 ,
+        child: SectionBottomSheet(),
+        ),
+      isScrollControlled: true,
     );
   }
 
