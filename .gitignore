@@ -46,3 +46,7 @@ app.*.map.json
 
 # build_runner related
 *.mapper.dart
+
+# FVM Version Cache
+.fvm/
+.vscode/
